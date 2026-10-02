@@ -13,6 +13,7 @@ def consume_secret(secret_token: str):
         )
 
         if secret is None:
+            session.commit()
             raise HTTPException(
                 status_code=404,
                 detail=f"Secret with token '{secret_token}' doesn't exist!"
@@ -39,3 +40,9 @@ def create_secret(secret_request: CreateSecretRequest):
         return {
             "token": new_secret.token
         }
+
+
+def delete_expired_secrets():
+    with SessionLocal() as session:
+        secrets_repository.delete_expired_secrets(session)
+        session.commit()

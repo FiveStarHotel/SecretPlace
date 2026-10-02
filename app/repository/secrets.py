@@ -44,4 +44,9 @@ def delete_secret(session: Session, token: str):
         .where(Secret.token == token)
     )
 
-    session.execute(stmt)    
+    session.execute(stmt)
+
+
+def delete_expired_secrets(session: Session):
+    stmt = delete(Secret).where(Secret.expires_at <= utc_now())
+    session.execute(stmt)
