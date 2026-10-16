@@ -3,7 +3,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.repository import auth as repository_auth
-from app.schemas import UserCreate, UserRead
+from app.schemas import Token, UserCreate, UserRead
+from app.security import DUMMY_HASH, create_access_token, verify_passowrd
 
 
 def register(data: UserCreate, session: Session):
@@ -29,3 +30,24 @@ def register(data: UserCreate, session: Session):
         )
 
     return UserRead.model_validate(user)
+
+
+def login(username: str, password: str, session: Session):
+    credentials_error_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid username or password!",
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+
+    user = repository_auth.get_user_by_username(session, username)
+
+    if user is None:
+        verify_passowrd(password, DUMMY_HASH)
+        raise credentials_error_exception
+    
+    if not verify_passowrd(password, user.hashed_password):
+        raise credentials_error_exception
+    
+    return Token(
+        access_token=create_access_token(user.id)
+    )
