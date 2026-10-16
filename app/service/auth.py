@@ -2,10 +2,8 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.models import User
 from app.repository import auth as repository_auth
 from app.schemas import UserCreate, UserRead
-from app.security import hash_password
 
 
 def register(data: UserCreate, session: Session):
