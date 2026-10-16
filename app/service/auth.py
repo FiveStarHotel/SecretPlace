@@ -1,6 +1,5 @@
-from sqlite3 import IntegrityError
-
 from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models import User
@@ -16,12 +15,11 @@ def register(data: UserCreate, session: Session):
             detail=f"Login '{data.username}' is already taken!"
         )
 
-    user = User(
-        username=data.username,
-        hashed_password=hash_password(data.password)
+    user = repository_auth.create_user(
+        session,
+        data.username,
+        data.password
     )
-
-    session.add(user)
 
     try:
         session.commit()
@@ -31,6 +29,5 @@ def register(data: UserCreate, session: Session):
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Login '{data.username}' is already taken!"
         )
-    
-    session.refresh(user)
+
     return UserRead.model_validate(user)
