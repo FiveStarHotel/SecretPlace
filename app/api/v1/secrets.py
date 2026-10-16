@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.dependence import SessionDep
+from app.dependency import SessionDep
 from app.schemas import CreateSecretRequest
 from app.service import secrets as secret_service
 
