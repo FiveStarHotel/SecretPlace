@@ -27,3 +27,7 @@ def create_user(session: Session, username: str, password: str) -> User:
     session.refresh(user)
 
     return user
+
+
+def get_user_by_id(session: Session, user_id: int) -> User | None:
+    return session.get(User, user_id)
