@@ -7,13 +7,14 @@ from app.models import Secret
 from app.utils import generate_token, utc_now
 
 
-def create_secret(session: Session, secret_content: str, time_to_live: int):
+def create_secret(session: Session, secret_content: str, time_to_live: int, user_id: int | None):
     expires_at = utc_now() + timedelta(seconds=time_to_live)
 
     new_secret = Secret(
         secret=secret_content,
         token=generate_token(),
-        expires_at=expires_at
+        expires_at=expires_at,
+        user_id=user_id
     )
     
     session.add(new_secret)
@@ -50,3 +51,14 @@ def delete_secret(session: Session, token: str):
 def delete_expired_secrets(session: Session):
     stmt = delete(Secret).where(Secret.expires_at <= utc_now())
     session.execute(stmt)
+
+
+def get_all_users_tokens(session: Session, user_id: int):
+    stmt = (
+        select(Secret.token)
+        .where(Secret.user_id == user_id)
+    )
+
+    tokens = session.scalars(stmt).all()
+
+    return list(tokens)
