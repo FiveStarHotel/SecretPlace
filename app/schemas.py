@@ -2,6 +2,17 @@ from typing import Annotated
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, StringConstraints
 
+SECRET_LENGTH_MIN = 1
+SECRET_LENGTH_MAX = 2**12
+
+SECRET_TTL_SEC_MIN = 60
+SECRET_TTL_SEC_MAX = 24 * 60 * 60
+
+USERNAME_MIN_LENGTH = 3
+USERNMAE_MAX_LENGTH = 32
+
+PASSWORD_MIN_LENGTH = 8
+PASSWORD_MAX_LENGTH = 128
 
 def _not_blank(value: str) -> str:
     if not value.strip():
@@ -10,17 +21,21 @@ def _not_blank(value: str) -> str:
 
 
 class CreateSecretRequest(BaseModel):
-    secret: str = Field(min_length=1, max_length=2**12)
-    time_to_live: int = Field(ge=1, le=86400)
+    secret: str = Field(min_length=SECRET_LENGTH_MIN, max_length=SECRET_LENGTH_MAX)
+    time_to_live: int = Field(ge=SECRET_TTL_SEC_MIN, le=SECRET_TTL_SEC_MAX)
+
+
+class ChangeSecretRequest(BaseModel):
+    secret: str = Field(min_length=SECRET_LENGTH_MIN, max_length=SECRET_LENGTH_MAX)
 
 
 Username = Annotated[
     str,
-    StringConstraints(strip_whitespace=True, min_length=3, max_length=32)
+    StringConstraints(strip_whitespace=True, min_length=USERNAME_MIN_LENGTH, max_length=USERNMAE_MAX_LENGTH)
 ]
 Password = Annotated[
     str,
-    StringConstraints(min_length=8, max_length=128),
+    StringConstraints(min_length=PASSWORD_MIN_LENGTH, max_length=PASSWORD_MAX_LENGTH),
     AfterValidator(_not_blank)
 ]
 

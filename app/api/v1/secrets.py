@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.dependency import CurrentUserDep, OptionalUserDep, SessionDep
-from app.schemas import CreateSecretRequest
+from app.schemas import ChangeSecretRequest, CreateSecretRequest
 from app.service import secrets as secret_service
 
 router = APIRouter()
@@ -17,3 +17,7 @@ def create_secret(secret_request: CreateSecretRequest, session: SessionDep, curr
 @router.get("/secrets")
 def get_all_my_tokens(current_user: CurrentUserDep, session: SessionDep):
     return secret_service.get_all_my_tokens(current_user, session)
+
+@router.put("/secrets/{secret_token}")
+def change_secret(secret_token: str, payload: ChangeSecretRequest, current_user: CurrentUserDep, session: SessionDep):
+    return secret_service.change_secret(secret_token, payload, current_user, session)

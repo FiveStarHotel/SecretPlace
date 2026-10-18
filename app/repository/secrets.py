@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from sqlalchemy import delete, select
+from sqlalchemy import and_, delete, select
 from sqlalchemy.orm import Session
 
 from app.models import Secret
@@ -22,6 +22,7 @@ def create_secret(session: Session, secret_content: str, time_to_live: int, user
 
     return new_secret
     
+
 def consume_secret(session: Session, token: str):
     stmt = (
         select(Secret)
@@ -38,6 +39,7 @@ def consume_secret(session: Session, token: str):
         return None
 
     return secret
+
 
 def delete_secret(session: Session, token: str):
     stmt = (
@@ -62,3 +64,22 @@ def get_all_users_tokens(session: Session, user_id: int):
     tokens = session.scalars(stmt).all()
 
     return list(tokens)
+
+
+def change_secret(session: Session, token: str, user_id: int, new_content: str) -> Secret | None:
+    stmt = (
+        select(Secret)
+        .where(and_(Secret.token == token, Secret.user_id == user_id))
+        .limit(1)
+    )
+
+    secret = session.scalar(stmt)
+    
+    if secret is None:
+        return None
+    
+    secret.secret = new_content
+
+    session.flush()
+    
+    return secret

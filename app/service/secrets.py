@@ -1,11 +1,10 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
 from app.models import User
 from app.repository import secrets as secrets_repository
-from app.schemas import CreateSecretRequest
-from app.service.auth import repository_auth
+from app.schemas import ChangeSecretRequest, CreateSecretRequest
 
 
 def consume_secret(secret_token: str, session: Session):
@@ -14,6 +13,9 @@ def consume_secret(secret_token: str, session: Session):
         secret_token
     )
 
+    # Это не только случай "ненахода"
+    # Секрет также мог существовать, но при этом просрочиться + не собранным сборщиком старости
+    # Он бы и так удалился + вернулся бы None
     if secret is None:
         session.commit()
         raise HTTPException(
@@ -58,4 +60,25 @@ def get_all_my_tokens(current_user: User, session: Session):
 
     return {
         "tokens": tokens_list
+    }
+
+
+def change_secret(secret_token: str, payload: ChangeSecretRequest, current_user: User, session: Session):
+    changed_secret = secrets_repository.change_secret(
+        session,
+        secret_token,
+        current_user.id,
+        payload.secret
+    )
+
+    if changed_secret is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Secret to change wasn't found"
+        )
+
+    session.commit()
+
+    return {
+        "token": changed_secret.token
     }
