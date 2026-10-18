@@ -31,7 +31,7 @@ def consume_secret(session: Session, token: str):
     )
 
     secret = session.scalar(stmt)
-    delete_secret(session, token)
+    _delete_secret_consumption(session, token)
 
     
 
@@ -41,7 +41,7 @@ def consume_secret(session: Session, token: str):
     return secret
 
 
-def delete_secret(session: Session, token: str):
+def _delete_secret_consumption(session: Session, token: str):
     stmt = (
         delete(Secret)
         .where(Secret.token == token)
@@ -58,7 +58,7 @@ def delete_expired_secrets(session: Session):
 def get_all_users_tokens(session: Session, user_id: int):
     stmt = (
         select(Secret.token)
-        .where(Secret.user_id == user_id)
+        .where(and_(Secret.user_id == user_id, Secret.expires_at <= utc_now()))
     )
 
     tokens = session.scalars(stmt).all()
@@ -83,3 +83,21 @@ def change_secret(session: Session, token: str, user_id: int, new_content: str) 
     session.flush()
     
     return secret
+
+
+def delete_secret(session: Session, token: str, user_id: int) -> bool:
+    stmt = (
+        select(Secret)
+        .where(and_(Secret.token == token, Secret.user_id == user_id))
+        .limit(1)
+    )
+
+    secret = session.scalar(stmt)
+
+    if secret is None:
+        return False
+    
+    session.delete(secret)
+    session.flush()
+
+    return True

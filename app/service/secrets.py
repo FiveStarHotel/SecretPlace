@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Response, status
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
@@ -74,7 +74,7 @@ def change_secret(secret_token: str, payload: ChangeSecretRequest, current_user:
     if changed_secret is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Secret to change wasn't found"
+            detail="Secret to change wasn't found!"
         )
 
     session.commit()
@@ -82,3 +82,17 @@ def change_secret(secret_token: str, payload: ChangeSecretRequest, current_user:
     return {
         "token": changed_secret.token
     }
+
+
+def delete_secret(secret_token: str, current_user: User, session: Session):
+    delete_status = secrets_repository.delete_secret(session, secret_token, current_user.id)
+
+    if not delete_status:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Secret to delete wasn't found!"
+        )
+
+    session.commit()
+    
+    return Response(status_code=status.HTTP_200_OK)

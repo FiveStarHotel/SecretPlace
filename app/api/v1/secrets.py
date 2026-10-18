@@ -21,3 +21,7 @@ def get_all_my_tokens(current_user: CurrentUserDep, session: SessionDep):
 @router.put("/secrets/{secret_token}")
 def change_secret(secret_token: str, payload: ChangeSecretRequest, current_user: CurrentUserDep, session: SessionDep):
     return secret_service.change_secret(secret_token, payload, current_user, session)
+
+@router.delete("/secrets/{secret_token}")
+def delete_secret(secret_token: str, current_user: CurrentUserDep, session: SessionDep):
+    return secret_service.delete_secret(secret_token, current_user, session)
