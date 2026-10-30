@@ -45,7 +45,7 @@ def revoke_refresh_token(session: Session, token: RefreshToken) -> None:
 def revoke_all_user_refresh_tokens(session: Session, user_id: int) -> None:
     stmt = (
         update(RefreshToken)
-        .where(RefreshToken.user_id == user_id, RefreshToken.revoked_at.is_not(None))
+        .where(RefreshToken.user_id == user_id, RefreshToken.revoked_at.is_(None))
         .values(revoked_at=datetime.now(UTC))
     )
 
