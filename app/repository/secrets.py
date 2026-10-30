@@ -58,7 +58,7 @@ def delete_expired_secrets(session: Session):
 
 def get_all_users_secrets(session: Session, user_id: int):
     stmt = (
-        select(Secret.token, Secret.expires_at)
+        select(Secret.token, Secret.expires_at, Secret.created_at)
         .where(and_(Secret.user_id == user_id, Secret.expires_at > datetime.now(UTC)))
     )
 

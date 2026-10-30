@@ -53,7 +53,8 @@ def get_all_my_tokens(current_user: User, session: Session):
     result = [
         {
             "token": x[0],
-            "expires_at": x[1]
+            "expires_at": x[1],
+            "created_at": x[2],
         } for x in secrets
     ]
 
