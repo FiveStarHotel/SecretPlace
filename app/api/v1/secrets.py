@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from app.dependency import CurrentUserDep, OptionalUserDep, SessionDep
 from app.schemas import (
@@ -27,6 +27,6 @@ def get_all_my_tokens(current_user: CurrentUserDep, session: SessionDep):
 def change_secret(secret_token: str, payload: SecretChange, current_user: CurrentUserDep, session: SessionDep):
     return secret_service.change_secret(secret_token, payload, current_user, session)
 
-@router.delete("/secrets/{secret_token}")
+@router.delete("/secrets/{secret_token}", status_code=status.HTTP_200_OK)
 def delete_secret(secret_token: str, current_user: CurrentUserDep, session: SessionDep):
     return secret_service.delete_secret(secret_token, current_user, session)

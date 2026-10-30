@@ -1,4 +1,3 @@
-from fastapi import Response, status
 from sqlalchemy.orm import Session
 
 from app.exceptions import SecretNotFoundError
@@ -86,5 +85,3 @@ def delete_secret(secret_token: str, current_user: User, session: Session):
         raise SecretNotFoundError()
 
     session.commit()
-    
-    return Response(status_code=status.HTTP_200_OK)
