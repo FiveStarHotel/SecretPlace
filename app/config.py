@@ -6,6 +6,7 @@ class Settings(BaseSettings):
 
     secret_token: str
     access_token_ttl: int
+    refresh_token_ttl: int
     algorithm: str
 
 

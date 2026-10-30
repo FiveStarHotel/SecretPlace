@@ -1,3 +1,5 @@
+import hashlib
+import secrets
 from datetime import UTC, datetime, timedelta
 
 import jwt
@@ -17,6 +19,7 @@ def verify_passowrd(password: str, hashed_password: str) -> bool:
 def create_access_token(user_id: int) -> str:
     payload = {
         "sub": str(user_id),
+        "iat": datetime.now(UTC),
         "exp": datetime.now(UTC) + timedelta(seconds=settings.access_token_ttl)
     }
 
@@ -27,7 +30,13 @@ def validate_access_token(token: str) -> int:
         token,
         settings.secret_token,
         [settings.algorithm],
-        options={"require": ["sub", "exp"]}
+        options={"require": ["sub", "exp", "iat"]}
     )
 
     return int(payload["sub"])
+
+def create_refresh_token() -> str:
+    return secrets.token_hex(32)
+
+def hash_refresh_token(token: str) -> str:
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()

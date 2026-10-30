@@ -30,5 +30,6 @@ class RefreshToken(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     token_hash: Mapped[str] = mapped_column(unique=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime]
     expires_at: Mapped[datetime]
     revoked_at: Mapped[datetime | None] = mapped_column(default=None)

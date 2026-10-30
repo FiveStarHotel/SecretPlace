@@ -1,10 +1,20 @@
+from datetime import UTC, datetime, timedelta
+
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.repository import auth as repository_auth
+from app.repository import refresh_tokens as repository_refresh_tokens
 from app.schemas import Token, UserCreate, UserRead
-from app.security import DUMMY_HASH, create_access_token, verify_passowrd
+from app.security import (
+    DUMMY_HASH,
+    create_access_token,
+    create_refresh_token,
+    hash_refresh_token,
+    verify_passowrd,
+)
 
 
 def register(data: UserCreate, session: Session):
@@ -32,6 +42,25 @@ def register(data: UserCreate, session: Session):
     return UserRead.model_validate(user)
 
 
+def issue_token(user_id: int, session: Session) -> Token:
+    expires_at = datetime.now(UTC) + timedelta(seconds=settings.refresh_token_ttl)
+    token = create_refresh_token()
+
+    repository_refresh_tokens.create_refresh_token(
+        session,
+        user_id,
+        hash_refresh_token(token),
+        expires_at
+    )
+
+    session.commit()
+
+    return Token(
+        access_token=create_access_token(user_id),
+        refresh_token=token
+    )
+
+
 def login(username: str, password: str, session: Session):
     credentials_error_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -48,6 +77,4 @@ def login(username: str, password: str, session: Session):
     if not verify_passowrd(password, user.hashed_password):
         raise credentials_error_exception
     
-    return Token(
-        access_token=create_access_token(user.id)
-    )
+    return issue_token(user.id, session)
