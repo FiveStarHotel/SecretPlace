@@ -20,12 +20,28 @@ def _not_blank(value: str) -> str:
     return value
 
 
-class CreateSecretRequest(BaseModel):
+class SecretCreate(BaseModel):
     secret: str = Field(min_length=SECRET_LENGTH_MIN, max_length=SECRET_LENGTH_MAX)
     time_to_live: int = Field(ge=SECRET_TTL_SEC_MIN, le=SECRET_TTL_SEC_MAX)
 
 
-class ChangeSecretRequest(BaseModel):
+class SecretRead(BaseModel):
+    model_config = {"from_attributes": True}
+
+    secret: str
+
+
+class SecretTokenRead(BaseModel):
+    model_config = {"from_attributes": True}
+
+    token: str
+
+
+class SecretsAllTokensRead(BaseModel):
+    tokens: list[str]
+
+
+class SecretChange(BaseModel):
     secret: str = Field(min_length=SECRET_LENGTH_MIN, max_length=SECRET_LENGTH_MAX)
 
 

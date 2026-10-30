@@ -4,7 +4,13 @@ from sqlalchemy.orm import Session
 from app.exceptions import SecretNotFoundError
 from app.models import User
 from app.repository import secrets as secrets_repository
-from app.schemas import ChangeSecretRequest, CreateSecretRequest
+from app.schemas import (
+    SecretChange,
+    SecretCreate,
+    SecretRead,
+    SecretsAllTokensRead,
+    SecretTokenRead,
+)
 
 
 def consume_secret(secret_token: str, session: Session):
@@ -20,15 +26,12 @@ def consume_secret(secret_token: str, session: Session):
         session.commit()
         raise SecretNotFoundError()
 
-    secret_content = secret.secret
-
     session.commit()
 
-    return {
-        "content": secret_content
-    }
+    return SecretRead.model_validate(secret)
 
-def create_secret(secret_request: CreateSecretRequest, session: Session, current_user: User | None):
+
+def create_secret(secret_request: SecretCreate, session: Session, current_user: User | None):
     new_secret = secrets_repository.create_secret(
         session=session,
         secret_content=secret_request.secret,
@@ -38,9 +41,7 @@ def create_secret(secret_request: CreateSecretRequest, session: Session, current
 
     session.commit()
 
-    return {
-        "token": new_secret.token
-    }
+    return SecretTokenRead.model_validate(new_secret)
 
 
 def get_all_my_tokens(current_user: User, session: Session):
@@ -49,12 +50,12 @@ def get_all_my_tokens(current_user: User, session: Session):
         current_user.id
     )
 
-    return {
-        "tokens": tokens_list
-    }
+    return SecretsAllTokensRead(
+        tokens=tokens_list
+    )
 
 
-def change_secret(secret_token: str, payload: ChangeSecretRequest, current_user: User, session: Session):
+def change_secret(secret_token: str, payload: SecretChange, current_user: User, session: Session):
     changed_secret = secrets_repository.change_secret(
         session,
         secret_token,
@@ -67,9 +68,7 @@ def change_secret(secret_token: str, payload: ChangeSecretRequest, current_user:
 
     session.commit()
 
-    return {
-        "token": changed_secret.token
-    }
+    return SecretTokenRead.model_validate(change_secret)
 
 
 def delete_secret(secret_token: str, current_user: User, session: Session):
