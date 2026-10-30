@@ -74,11 +74,9 @@ def login(username: str, password: str, session: Session):
 
 
 def refresh_access_token(refresh_token: str, session: Session):
-    hashed_token = hash_refresh_token(refresh_token)
-    
     stored_refresh_token = repository_refresh_tokens.get_refresh_token_by_hash(
-        session,
-        hashed_token
+        session=session,
+        hashed_token=hash_refresh_token(refresh_token)
     )
 
     if stored_refresh_token is None:
@@ -102,4 +100,39 @@ def refresh_access_token(refresh_token: str, session: Session):
 
     return issue_token(user.id, session)
 
+
+def logout(refresh_token: str, session: Session):
+    stored_refresh_token = repository_refresh_tokens.get_refresh_token_by_hash(
+        session=session,
+        hashed_token=hash_refresh_token(refresh_token)
+    )
+
+    if stored_refresh_token is None or stored_refresh_token.revoked_at is not None:
+        return
+
+    repository_refresh_tokens.revoke_refresh_token(
+        session=session,
+        token=stored_refresh_token
+    )
+
+    session.commit()
+
+
+def logout_all(refresh_token: str, session: Session):
+    stored_refresh_token = repository_refresh_tokens.get_refresh_token_by_hash(
+        session=session,
+        hashed_token=hash_refresh_token(refresh_token)
+    )
+
+    if stored_refresh_token is None:
+        raise InvalidRefreshTokenError()
     
+    if stored_refresh_token.expires_at <= datetime.now(UTC):
+        raise InvalidRefreshTokenError()
+    
+    if stored_refresh_token.revoked_at is not None:
+        raise InvalidRefreshTokenError()
+    
+    repository_refresh_tokens.revoke_all_user_refresh_tokens(session, stored_refresh_token.user_id)
+
+    session.commit()
