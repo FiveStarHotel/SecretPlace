@@ -512,3 +512,39 @@ textarea.input {
   flex: 1;
   min-width: 0;
 }
+
+/* ---------- Открытый секрет ---------- */
+
+.center-page > .secret-card {
+  max-width: 640px;
+}
+
+.secret-card h1 {
+  font-size: 24px;
+}
+
+.secret-card textarea.input {
+  height: 180px;
+  padding: 14px;
+  font-size: 14px;
+}
+
+.secret-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.secret-card__footer .warning {
+  flex: 1 1 280px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

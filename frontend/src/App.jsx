@@ -4,6 +4,7 @@ import Header from './components/Header.jsx'
 import GuestHome from './pages/GuestHome.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
+import SecretPage from './pages/SecretPage.jsx'
 
 // на «/» гость видит форму создания, а вошедший пользователь - свои секреты
 function Home() {
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/s/:token" element={<SecretPage />} />
       </Routes>
     </>
   )
