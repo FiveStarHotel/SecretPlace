@@ -14,6 +14,7 @@ def create_secret(session: Session, secret_content: str, time_to_live: int, user
         secret=secret_content,
         token=generate_token(),
         expires_at=expires_at,
+        created_at=datetime.now(UTC),
         user_id=user_id
     )
     

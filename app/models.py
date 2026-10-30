@@ -12,6 +12,7 @@ class Secret(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     secret: Mapped[str]
     token: Mapped[str] = mapped_column(unique=True)
+    created_at: Mapped[datetime]
     expires_at: Mapped[datetime]
     user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
 
