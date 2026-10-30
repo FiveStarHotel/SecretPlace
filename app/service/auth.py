@@ -1,10 +1,15 @@
 from datetime import UTC, datetime, timedelta
 
-from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.exceptions import (
+    CredentialsError,
+    InactiveUserError,
+    InvalidRefreshTokenError,
+    UsernameOccupiedError,
+)
 from app.repository import auth as repository_auth
 from app.repository import refresh_tokens as repository_refresh_tokens
 from app.schemas import Token, UserCreate, UserRead
@@ -19,10 +24,7 @@ from app.security import (
 
 def register(data: UserCreate, session: Session):
     if repository_auth.get_user_by_username(session, data.username) is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=f"Login '{data.username}' is already taken!"
-        )
+        raise UsernameOccupiedError()
 
     user = repository_auth.create_user(
         session,
@@ -34,10 +36,7 @@ def register(data: UserCreate, session: Session):
         session.commit()
     except IntegrityError:
         session.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=f"Login '{data.username}' is already taken!"
-        )
+        raise UsernameOccupiedError()
 
     return UserRead.model_validate(user)
 
@@ -62,19 +61,45 @@ def issue_token(user_id: int, session: Session) -> Token:
 
 
 def login(username: str, password: str, session: Session):
-    credentials_error_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid username or password!",
-        headers={"WWW-Authenticate": "Bearer"}
-    )
-
     user = repository_auth.get_user_by_username(session, username)
 
     if user is None:
         verify_passowrd(password, DUMMY_HASH)
-        raise credentials_error_exception
+        raise CredentialsError()
     
     if not verify_passowrd(password, user.hashed_password):
-        raise credentials_error_exception
+        raise CredentialsError()
     
     return issue_token(user.id, session)
+
+
+def refresh_access_token(refresh_token: str, session: Session):
+    hashed_token = hash_refresh_token(refresh_token)
+    
+    stored_refresh_token = repository_refresh_tokens.get_refresh_token_by_hash(
+        session,
+        hashed_token
+    )
+
+    if stored_refresh_token is None:
+        raise InvalidRefreshTokenError()
+    
+    user = repository_auth.get_user_by_id(session, stored_refresh_token.user_id)
+
+    if user is None:
+        raise InvalidRefreshTokenError()
+    
+    if stored_refresh_token.expires_at <= datetime.now(UTC):
+        raise InvalidRefreshTokenError()
+
+    if stored_refresh_token.revoked_at is not None:
+        raise InvalidRefreshTokenError()
+
+    if not user.is_active:
+        raise InactiveUserError()
+
+    repository_refresh_tokens.revoke_refresh_token(session, stored_refresh_token)
+
+    return issue_token(user.id, session)
+
+    

@@ -26,3 +26,13 @@ class CredentialsError(AppError):
 class InvalidAccessTokenError(AppError):
     status_code = 401
     detail = "Invalid access token"
+
+
+class InvalidRefreshTokenError(AppError):
+    status_code = 401
+    detail = "Invalid refresh token"
+
+
+class InactiveUserError(AppError):
+    status_code = 403
+    detail = "User is inactive"

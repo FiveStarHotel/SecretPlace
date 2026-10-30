@@ -1,14 +1,14 @@
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import and_, delete, select
 from sqlalchemy.orm import Session
 
 from app.models import Secret
-from app.utils import generate_token, utc_now
+from app.utils import generate_token
 
 
 def create_secret(session: Session, secret_content: str, time_to_live: int, user_id: int | None):
-    expires_at = utc_now() + timedelta(seconds=time_to_live)
+    expires_at = datetime.now(UTC) + timedelta(seconds=time_to_live)
 
     new_secret = Secret(
         secret=secret_content,
@@ -35,7 +35,7 @@ def consume_secret(session: Session, token: str):
 
     
 
-    if secret is None or secret.expires_at <= utc_now():
+    if secret is None or secret.expires_at <= datetime.now(UTC):
         return None
 
     return secret
@@ -51,14 +51,14 @@ def _delete_secret_consumption(session: Session, token: str):
 
 
 def delete_expired_secrets(session: Session):
-    stmt = delete(Secret).where(Secret.expires_at <= utc_now())
+    stmt = delete(Secret).where(Secret.expires_at <= datetime.now(UTC))
     session.execute(stmt)
 
 
 def get_all_users_tokens(session: Session, user_id: int):
     stmt = (
         select(Secret.token)
-        .where(and_(Secret.user_id == user_id, Secret.expires_at <= utc_now()))
+        .where(and_(Secret.user_id == user_id, Secret.expires_at > datetime.now(UTC)))
     )
 
     tokens = session.scalars(stmt).all()

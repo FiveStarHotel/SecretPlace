@@ -1,5 +1,6 @@
 from datetime import UTC, datetime
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models import RefreshToken
@@ -22,3 +23,20 @@ def create_refresh_token(
     session.flush()
 
     return refresh_token
+
+
+def get_refresh_token_by_hash(session: Session, hashed_token: str) -> RefreshToken | None:
+    stmt = (
+        select(RefreshToken)
+        .where(RefreshToken.token_hash == hashed_token)
+        .limit(1)
+    )
+
+    token = session.scalar(stmt)
+
+    return token
+
+
+def revoke_refresh_token(session: Session, token: RefreshToken) -> None:
+    token.revoked_at = datetime.now(UTC)
+    session.flush()

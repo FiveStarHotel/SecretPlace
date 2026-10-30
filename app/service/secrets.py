@@ -1,7 +1,7 @@
-from fastapi import HTTPException, Response, status
+from fastapi import Response, status
 from sqlalchemy.orm import Session
 
-from app.database import SessionLocal
+from app.exceptions import SecretNotFoundError
 from app.models import User
 from app.repository import secrets as secrets_repository
 from app.schemas import ChangeSecretRequest, CreateSecretRequest
@@ -18,10 +18,7 @@ def consume_secret(secret_token: str, session: Session):
     # Он бы и так удалился + вернулся бы None
     if secret is None:
         session.commit()
-        raise HTTPException(
-            status_code=404,
-            detail=f"Secret with token '{secret_token}' doesn't exist!"
-        )
+        raise SecretNotFoundError()
 
     secret_content = secret.secret
 
@@ -46,12 +43,6 @@ def create_secret(secret_request: CreateSecretRequest, session: Session, current
     }
 
 
-def delete_expired_secrets():
-    with SessionLocal() as session:
-        secrets_repository.delete_expired_secrets(session)
-        session.commit()
-
-
 def get_all_my_tokens(current_user: User, session: Session):
     tokens_list = secrets_repository.get_all_users_tokens(
         session,
@@ -72,10 +63,7 @@ def change_secret(secret_token: str, payload: ChangeSecretRequest, current_user:
     )
 
     if changed_secret is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Secret to change wasn't found!"
-        )
+        raise SecretNotFoundError()
 
     session.commit()
 
@@ -88,10 +76,7 @@ def delete_secret(secret_token: str, current_user: User, session: Session):
     delete_status = secrets_repository.delete_secret(session, secret_token, current_user.id)
 
     if not delete_status:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Secret to delete wasn't found!"
-        )
+        raise SecretNotFoundError()
 
     session.commit()
     

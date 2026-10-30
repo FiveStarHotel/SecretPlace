@@ -2,11 +2,12 @@ from collections.abc import Generator
 from typing import Annotated
 
 import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
+from app.exceptions import InvalidAccessTokenError
 from app.models import User
 from app.repository import auth as auth_repository
 from app.security import validate_access_token
@@ -22,21 +23,15 @@ SessionDep = Annotated[Session, Depends(get_session)]
 
 
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDep):
-    credential_error_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Problems with credentials!",
-        headers={"WWW-Authenticate": "Bearer"}
-    )
-
     try:
         user_id = validate_access_token(token)
     except jwt.InvalidTokenError:
-        raise credential_error_exception
+        raise InvalidAccessTokenError()
     
     user = auth_repository.get_user_by_id(session, user_id)
 
     if not user:
-        raise credential_error_exception
+        raise InvalidAccessTokenError()
     
     return user
 
