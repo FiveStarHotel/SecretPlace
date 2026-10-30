@@ -4,6 +4,7 @@ from app.dependency import CurrentUserDep, OptionalUserDep, SessionDep
 from app.schemas import (
     SecretChange,
     SecretCreate,
+    SecretRead,
     SecretsAllRead,
     SecretTokenRead,
 )
@@ -11,7 +12,7 @@ from app.service import secrets as secret_service
 
 router = APIRouter()
 
-@router.get("/secrets/{secret_token}")
+@router.get("/secrets/{secret_token}", response_model=SecretRead)
 def consume_secret(secret_token: str, session: SessionDep):
     return secret_service.consume_secret(secret_token, session)
 
