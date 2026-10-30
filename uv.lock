@@ -428,7 +428,7 @@ wheels = [
 ]
 
 [[package]]
-name = "rip"
+name = "secret-place"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
