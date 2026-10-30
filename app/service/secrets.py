@@ -75,7 +75,7 @@ def change_secret(secret_token: str, payload: SecretChange, current_user: User, 
 
     session.commit()
 
-    return SecretTokenRead.model_validate(change_secret)
+    return SecretTokenRead.model_validate(changed_secret)
 
 
 def delete_secret(secret_token: str, current_user: User, session: Session):
