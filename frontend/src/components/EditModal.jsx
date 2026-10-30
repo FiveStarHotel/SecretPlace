@@ -32,7 +32,6 @@ export default function EditModal({ token, onClose, onSaved }) {
           <textarea className="input" id="new-secret" placeholder="Введите новый текст" required autoFocus
             maxLength={SECRET_MAX_LENGTH} value={secret} onChange={(e) => setSecret(e.target.value)} />
           <div className="field__footer">
-            <span className="hint">Старый текст не показывается. Срок жизни не меняется.</span>
             <span className="hint">{secret.length} / {SECRET_MAX_LENGTH}</span>
           </div>
         </div>
