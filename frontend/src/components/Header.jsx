@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router'
 import { useAuth } from '../auth.jsx'
 import Icon from './Icon.jsx'
+import './Header.css'
 
 export default function Header() {
   const { user, loading, logout } = useAuth()

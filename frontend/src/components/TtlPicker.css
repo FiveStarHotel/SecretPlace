@@ -1,0 +1,27 @@
+.ttl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ttl .btn {
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+.ttl .btn[aria-pressed='true'] {
+  background: var(--primary);
+  border-color: var(--primary-border);
+  font-weight: 600;
+}
+
+.ttl__custom {
+  border-style: dashed;
+  background: transparent;
+  color: var(--text-2);
+}
+
+.ttl__minutes {
+  width: 120px;
+  min-height: 40px;
+}

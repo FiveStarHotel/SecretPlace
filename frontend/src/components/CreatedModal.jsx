@@ -2,6 +2,7 @@ import { formatDateTime } from '../format.js'
 import CopyButton from './CopyButton.jsx'
 import Icon from './Icon.jsx'
 import Modal from './Modal.jsx'
+import './CreatedModal.css'
 
 // created - { token, expiresAt } из SecretForm
 export default function CreatedModal({ created, onClose, onCreateMore }) {

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './TtlPicker.css'
 
 const PRESETS = [
   { label: '5 мин', seconds: 5 * 60 },

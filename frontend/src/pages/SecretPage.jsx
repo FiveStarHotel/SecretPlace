@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router'
 import { request } from '../api.js'
 import CopyButton from '../components/CopyButton.jsx'
 import Icon from '../components/Icon.jsx'
+import './SecretPage.css'
 
 export default function SecretPage() {
   const { token } = useParams()

@@ -7,6 +7,7 @@ import Icon from '../components/Icon.jsx'
 import Modal from '../components/Modal.jsx'
 import SecretForm from '../components/SecretForm.jsx'
 import { formatDateTime, formatMinutes, minutesLeft, shortToken } from '../format.js'
+import './MySecrets.css'
 
 // с какого остатка времени «Осталось» подсвечивается бейджем
 const SOON_MINUTES = 5

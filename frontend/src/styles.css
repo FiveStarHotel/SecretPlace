@@ -44,57 +44,6 @@ h1, h2, p {
   color: var(--text-2);
 }
 
-/* ---------- Шапка ---------- */
-
-.header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-}
-
-.header__inner {
-  max-width: var(--container);
-  min-height: 61px;
-  margin: 0 auto;
-  padding: 10px 24px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.header__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.header__user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-right: 8px;
-  font-size: 14px;
-  color: var(--text-2);
-}
-
-.logo {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text);
-  text-decoration: none;
-  letter-spacing: -0.01em;
-}
-
-.logo:hover {
-  color: var(--text);
-}
-
-.logo span {
-  color: var(--accent);
-}
-
 /* ---------- Кнопки ---------- */
 
 .btn {
@@ -173,23 +122,6 @@ h1, h2, p {
   color: var(--accent);
 }
 
-.close-btn {
-  width: 40px;
-  height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--text-2);
-  cursor: pointer;
-}
-
-.close-btn:hover {
-  background: var(--surface-2);
-}
-
 /* ---------- Формы ---------- */
 
 .form {
@@ -257,11 +189,6 @@ textarea.input {
   color: var(--danger);
 }
 
-.success {
-  font-size: 13px;
-  color: var(--accent);
-}
-
 .warning {
   padding: 12px 14px;
   border: 1px solid var(--warning-border);
@@ -269,36 +196,6 @@ textarea.input {
   background: var(--warning-bg);
   color: var(--warning);
   font-size: 13px;
-}
-
-/* ---------- Выбор срока жизни ---------- */
-
-.ttl {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.ttl .btn {
-  min-height: 40px;
-  padding: 0 14px;
-}
-
-.ttl .btn[aria-pressed='true'] {
-  background: var(--primary);
-  border-color: var(--primary-border);
-  font-weight: 600;
-}
-
-.ttl__custom {
-  border-style: dashed;
-  background: transparent;
-  color: var(--text-2);
-}
-
-.ttl__minutes {
-  width: 120px;
-  min-height: 40px;
 }
 
 /* ---------- Карточки и страницы ---------- */
@@ -374,98 +271,11 @@ textarea.input {
   height: 32px;
 }
 
-/* ---------- Модалка ---------- */
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.modal {
-  width: 100%;
-  max-width: 560px;
-  max-height: 100%;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.modal__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.modal__title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.modal__title h2 {
-  font-size: 22px;
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 8px;
-}
-
-/* ---------- Таблица ---------- */
-
-.table-wrap {
-  overflow-x: auto;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-}
-
-.table {
-  width: 100%;
-  min-width: 760px;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.table th {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-2);
-}
-
-.table td {
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--surface-2);
-}
-
-.table tr:last-child td {
-  border-bottom: none;
-}
-
-.table .actions {
-  gap: 6px;
-}
-
-.badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border: 1px solid var(--warning-border);
-  border-radius: var(--radius-pill);
-  background: var(--warning-bg);
-  color: var(--warning);
-  font-size: 13px;
 }
 
 .form__footer {
@@ -474,122 +284,10 @@ textarea.input {
   color: var(--text-2);
 }
 
-/* ---------- Главная ---------- */
-
-.home {
-  flex: 1;
-  width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 56px 16px 48px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.home__intro {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  text-align: center;
-}
-
-.home__intro h1 {
-  font-size: 34px;
-  letter-spacing: -0.02em;
-}
-
-.home__intro p {
-  font-size: 16px;
-}
-
-.copy-row {
-  display: flex;
-  gap: 8px;
-}
-
-.copy-row .input {
-  flex: 1;
-  min-width: 0;
-}
-
-/* ---------- Открытый секрет ---------- */
-
-.center-page > .secret-card {
-  max-width: 640px;
-}
-
-.secret-card h1 {
-  font-size: 24px;
-}
-
-.secret-card textarea.input {
-  height: 180px;
-  padding: 14px;
-  font-size: 14px;
-}
-
-.secret-card__footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.secret-card__footer .warning {
-  flex: 1 1 280px;
-}
-
 .visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
-}
-
-/* ---------- Мои секреты ---------- */
-
-.page {
-  width: 100%;
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 40px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.page__top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.page__top h1 {
-  font-size: 28px;
-}
-
-.page__top p {
-  font-size: 14px;
-}
-
-.page__top .btn {
-  font-size: 15px;
-}
-
-.table th:last-child {
-  text-align: right;
-}
-
-.table td:last-child {
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-.empty-card {
-  max-width: none;
 }

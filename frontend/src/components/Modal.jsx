@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Icon from './Icon.jsx'
+import './Modal.css'
 
 // Закрывается по крестику, Esc и клику по затемнённому фону
 export default function Modal({ title, icon, subtitle, onClose, children }) {

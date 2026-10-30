@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import CreatedModal from '../components/CreatedModal.jsx'
 import SecretForm from '../components/SecretForm.jsx'
+import './GuestHome.css'
 
 export default function GuestHome() {
   const [created, setCreated] = useState(null)

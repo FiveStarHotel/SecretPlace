@@ -1,0 +1,9 @@
+.copy-row {
+  display: flex;
+  gap: 8px;
+}
+
+.copy-row .input {
+  flex: 1;
+  min-width: 0;
+}
