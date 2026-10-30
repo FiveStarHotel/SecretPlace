@@ -4,7 +4,7 @@ from app.dependency import CurrentUserDep, OptionalUserDep, SessionDep
 from app.schemas import (
     SecretChange,
     SecretCreate,
-    SecretsAllTokensRead,
+    SecretsAllRead,
     SecretTokenRead,
 )
 from app.service import secrets as secret_service
@@ -19,7 +19,7 @@ def consume_secret(secret_token: str, session: SessionDep):
 def create_secret(secret_request: SecretCreate, session: SessionDep, current_user: OptionalUserDep):
     return secret_service.create_secret(secret_request, session, current_user)
 
-@router.get("/secrets", response_model=SecretsAllTokensRead)
+@router.get("/secrets", response_model=SecretsAllRead)
 def get_all_my_tokens(current_user: CurrentUserDep, session: SessionDep):
     return secret_service.get_all_my_tokens(current_user, session)
 

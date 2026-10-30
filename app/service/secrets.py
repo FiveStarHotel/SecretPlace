@@ -8,7 +8,7 @@ from app.schemas import (
     SecretChange,
     SecretCreate,
     SecretRead,
-    SecretsAllTokensRead,
+    SecretsAllRead,
     SecretTokenRead,
 )
 
@@ -45,13 +45,20 @@ def create_secret(secret_request: SecretCreate, session: Session, current_user: 
 
 
 def get_all_my_tokens(current_user: User, session: Session):
-    tokens_list = secrets_repository.get_all_users_tokens(
+    secrets = secrets_repository.get_all_users_secrets(
         session,
         current_user.id
     )
 
-    return SecretsAllTokensRead(
-        tokens=tokens_list
+    result = [
+        {
+            "token": x[0],
+            "expires_at": x[1]
+        } for x in secrets
+    ]
+
+    return SecretsAllRead(
+        secrets=result
     )
 
 

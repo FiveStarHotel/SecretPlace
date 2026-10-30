@@ -55,15 +55,15 @@ def delete_expired_secrets(session: Session):
     session.execute(stmt)
 
 
-def get_all_users_tokens(session: Session, user_id: int):
+def get_all_users_secrets(session: Session, user_id: int):
     stmt = (
-        select(Secret.token)
+        select(Secret.token, Secret.expires_at)
         .where(and_(Secret.user_id == user_id, Secret.expires_at > datetime.now(UTC)))
     )
 
-    tokens = session.scalars(stmt).all()
+    secrets = session.execute(stmt).all()
 
-    return list(tokens)
+    return list(secrets)
 
 
 def change_secret(session: Session, token: str, user_id: int, new_content: str) -> Secret | None:

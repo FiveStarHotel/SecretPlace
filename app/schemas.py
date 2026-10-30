@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated
 
 from pydantic import AfterValidator, BaseModel, ConfigDict, Field, StringConstraints
@@ -37,8 +38,8 @@ class SecretTokenRead(BaseModel):
     token: str
 
 
-class SecretsAllTokensRead(BaseModel):
-    tokens: list[str]
+class SecretsAllRead(BaseModel):
+    secrets: list[dict[str, str | datetime]]
 
 
 class SecretChange(BaseModel):
