@@ -20,10 +20,10 @@ def main() -> int:
             amount = delete_expired_secrets(session, args.dry_run)
 
         if args.dry_run:
-            print(f"Epired secrets: {amount}")
+            print(f"Expired secrets: {amount}")
         else:
             print(f"Deleted expired secrests: {amount}")
-            
+
     except Exception as e:
         print(f"Error: {e}")
         return 1
