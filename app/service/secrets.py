@@ -85,3 +85,12 @@ def delete_secret(secret_token: str, current_user: User, session: Session):
         raise SecretNotFoundError()
 
     session.commit()
+
+
+def delete_expired_secrets(session: Session, dry_run=False) -> int:
+    deleted_amount = secrets_repository.delete_expired_secrets(session, dry_run)
+
+    if not dry_run:
+        session.commit()
+    
+    return deleted_amount

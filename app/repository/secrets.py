@@ -1,6 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import and_, delete, select
+from sqlalchemy import and_, delete, func, select
 from sqlalchemy.orm import Session
 
 from app.models import Secret
@@ -51,9 +51,23 @@ def _delete_secret_consumption(session: Session, token: str):
     session.execute(stmt)
 
 
-def delete_expired_secrets(session: Session):
-    stmt = delete(Secret).where(Secret.expires_at <= datetime.now(UTC))
-    session.execute(stmt)
+def delete_expired_secrets(session: Session, dry_run=False) -> int:
+    executed_at = datetime.now(UTC)
+
+    stmt = (
+        delete(Secret)
+        .where(Secret.expires_at <= executed_at)
+    )
+
+    amount_deleted = session.scalar(
+        select(func.count(Secret.id))
+        .where(Secret.expires_at <= executed_at)
+    )
+
+    if not dry_run:
+        session.execute(stmt)
+
+    return 0 if amount_deleted is None else amount_deleted
 
 
 def get_all_users_secrets(session: Session, user_id: int):
