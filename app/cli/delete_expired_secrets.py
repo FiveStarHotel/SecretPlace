@@ -22,7 +22,7 @@ def main() -> int:
         if args.dry_run:
             print(f"Expired secrets: {amount}")
         else:
-            print(f"Deleted expired secrests: {amount}")
+            print(f"Deleted expired secrets: {amount}")
 
     except Exception as e:
         print(f"Error: {e}")
