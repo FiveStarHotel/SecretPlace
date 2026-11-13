@@ -16,7 +16,7 @@
 Необходим установленный пакетный менеджер `uv`.
 
 ```
-git clone <адрес репозитория>
+git clone https://github.com/FiveStarHotel/SecretPlace.git
 cd SecretPlace
 uv sync
 uv run main:app
@@ -29,7 +29,7 @@ uv run main:app
 Необходимы установленные `Docker` и `Docker Compose`.
 
 ```
-git clone <адрес репозитория>
+git clone https://github.com/FiveStarHotel/SecretPlace.git
 cd SecretPlace
 docker compose up --build -d
 ```
