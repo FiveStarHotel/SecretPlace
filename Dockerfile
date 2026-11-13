@@ -11,5 +11,8 @@ RUN uv sync --frozen
 COPY . .
 COPY --from=frontend /frontend/dist ./frontend/dist
 
+RUN apt-get update && apt-get install -y cron && rm -rf /var/lib/apt/lists/*
+COPY crontab /etc/cron.d/cleanup
+
 EXPOSE 8080
-CMD ["sh", "-c", "uv run alembic upgrade head && uv run uvicorn main:app --host 0.0.0.0 --port 8080"]
+CMD ["sh", "-c", "uv run alembic upgrade head && cron && uv run uvicorn main:app --host 0.0.0.0 --port 8080"]

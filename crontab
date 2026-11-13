@@ -1,0 +1,1 @@
+*/30 * * * * root cd /app && uv run python -m app.cli.delete_expired_secrets > /proc/1/fd/1 2>&1
