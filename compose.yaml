@@ -1,0 +1,8 @@
+services:
+  secret-place-app:
+    build: .
+    image: secret-place-app:latest
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
